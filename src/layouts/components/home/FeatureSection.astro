@@ -1,0 +1,105 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import Button from "@/shortcodes/Button";
+import fs from 'fs';
+import path from 'path';
+
+type Props = {
+  title: string;
+  content: string;
+  features: any[];
+};
+
+const { title, content, features } = Astro.props;
+
+// Function to read SVG files
+
+---
+
+<section class="section">
+  <div class="container">
+    <div class="mx-auto text-center mb-16">
+      <h2
+        class="pb-4 text-balance"
+        data-aos="fade-up-sm"
+        set:html={markdownify(title)}
+      />
+      <p
+        class="pb-8 text-xl text-balance"
+        data-aos="fade-up-sm"
+        set:html={markdownify(content)}
+      />
+    </div>
+
+    <div class="row justify-center g-4">
+      {
+        features.map((feature: any, i: number) => (
+          <div
+            class="col-12 lg:col-5 sm:col-6"
+            data-aos="fade-up-sm"
+            data-aos-delay={50 + i * 50}
+          >
+            <div class="feature-card bg-gradient border-border p-8 pb-4 rounded-2xl">
+              <div class="flex flex-col lg:flex-row gap-5 justify-center lg:justify-between mb-4">
+                <div class="flex flex-col">
+                  <h4
+                    class="mb-3 bg-gradient-to-b from-white from-80% via-gray-700 via-10% to-white to-100% bg-clip-text text-transparent" 
+                    set:html={feature.title} 
+                  />
+                  <p class="mb-8" set:html={feature.content} />
+                  <div class="w-fit">
+                    {feature.button.enable && (
+                      <button
+                        onclick="if(window.$crisp)window.$crisp.push(['do', 'chat:open'])"
+                        class={`btn ${feature.button.style === "outline" ? "btn-outline-primary" : "btn-primary"}`}
+                      >
+                        {feature.button.style === "outline" ? <span>{feature.button.label}</span> : feature.button.label}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .feature-card {
+    position: relative;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #7543FF, #C0C0C0, #7543FF);
+    background-size: 200% 200%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .feature-card:hover::before {
+    opacity: 0.3;
+    animation: gradientShift 5s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+</style> 
